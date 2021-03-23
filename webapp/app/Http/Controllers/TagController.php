@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Tag;
 use Illuminate\Http\Request;
+use App\Http\Requests\TagRequest;
 
 class TagController extends Controller
 {
@@ -33,13 +34,8 @@ class TagController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TagRequest $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'unique:tags'],
-            'description' => ['max:255']
-        ]);
-
         $tag = Tag::create([
             'name' => $request->name,
             'description' => $request->description
