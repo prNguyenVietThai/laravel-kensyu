@@ -35,7 +35,17 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'unique:tags'],
+            'description' => ['max:255']
+        ]);
+
+        $tag = Tag::create([
+            'name' => $request->name,
+            'description' => $request->description
+        ]);
+
+        return redirect()->route('home');
     }
 
     /**
