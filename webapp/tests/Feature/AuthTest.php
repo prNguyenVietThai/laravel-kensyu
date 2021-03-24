@@ -11,7 +11,9 @@ use App\User;
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
-    
+
+    use WithFaker;
+
     /**
      * ホームページを表示に成功する場合
      *
@@ -50,11 +52,12 @@ class AuthTest extends TestCase
      * @return void
      */
     public function testSignupSuccess(){
+        $number = $this->faker->numberBetween(10000000, 99999999);
         $user = [
-            'name' => 'Nguyen Viet Thai',
-            'email' => 'nguyenvietthai1351997@gmail.com',
-            'password' => '12345678',
-            'confirm' => '12345678'
+            'name' => $this->faker->name,
+            'email' => $this->faker->email,
+            'password' => $number,
+            'confirm' => $number
         ];
         $this->post('/signup', $user)->assertRedirect('/');
     }
@@ -66,8 +69,8 @@ class AuthTest extends TestCase
      */
     public function testSignupFaile(){
         $user = [
-            'name' => 'Nguyen Viet Thai',
-            'email' => 'email-invalid',
+            'name' => $this->faker->name,
+            'email' => $this->faker->email,
             'password' => '12678',
             'confirm' => '1234'
         ];
@@ -76,15 +79,14 @@ class AuthTest extends TestCase
     }
 
     public function testLoginSuccess(){
+        $number = $this->faker->numberBetween(10000000, 99999999);
         $user = factory(User::class)->create([
-            'name' => 'Tony Stark',
-            'email' => 'tony.stark@iron.man',
-            'password' => Hash::make('ironman123')
+            'password' => Hash::make($number)
         ]);
-        
+
         $response = $this->post('/login', [
-            'email' => 'tony.stark@iron.man',
-            'password' => 'ironman123'
+            'email' => $user->email,
+            'password' => $number
         ]);
 
         $this->assertAuthenticatedAs($user);
@@ -93,8 +95,8 @@ class AuthTest extends TestCase
 
     public function testLoginFaile(){
         $user = [
-            'email' => 'tony.stark@iron.man',
-            'password' => 'peter123@'
+            'email' => $this->faker->name,
+            'password' => $this->faker->numberBetween(10000000, 99999999)
         ];
         $this->post('/login', $user)->assertRedirect('/login');
     }
