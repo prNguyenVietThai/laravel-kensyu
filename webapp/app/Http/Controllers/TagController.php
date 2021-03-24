@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TagService;
 use App\Tag;
 use Illuminate\Http\Request;
 use App\Http\Requests\TagRequest;
@@ -36,10 +37,7 @@ class TagController extends Controller
      */
     public function store(TagRequest $request)
     {
-        $tag = Tag::create([
-            'name' => $request->name,
-            'description' => $request->description
-        ]);
+        TagService::create($request->toArray());
 
         return redirect()->route('home');
     }
