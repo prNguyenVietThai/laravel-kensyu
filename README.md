@@ -31,3 +31,10 @@ php artisan migrate
 ```
 
 Open browser and access to: http://localhost:8000
+
+#PHPUnit - test all 
+ ```sh
+docker-compose exec app bash
+cd webapp
+vendor/bin/phpunit
+```
