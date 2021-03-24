@@ -18,6 +18,7 @@ class AuthController extends Controller
             'tags' => $tags,
             'posts' => $posts
         ]);
+        return view('home');
     }
 
     public function showLoginPage(){
