@@ -36,5 +36,5 @@ Open browser and access to: http://localhost:8000
  ```sh
 docker-compose exec app bash
 cd webapp
-vendor/bin/phpunit
+vendor/bin/phpunit OR composer test
 ```
