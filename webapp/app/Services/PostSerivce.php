@@ -18,26 +18,30 @@ class PostSerivce {
                 'user_id' => Auth::user()->id
             ]);
 
-            foreach($data['images'] as $key => $image){
-                $publicDir = "public/";
-                $path = $data['images'][$key]->store('public/images');
-                $path = substr($path, strlen($publicDir) - 1, strlen($path));
-                $img = Image::create([
-                    'url' => $path,
-                    'post_id' => $post->id
-                ]);
-                if($key == $data['thumbnail']){
-                    $img->is_thumbnail = true;
-                    $img->save();
+            if(isset($data['images'])){
+                foreach($data['images'] as $key => $image){
+                    $publicDir = "public/";
+                    $path = $data['images'][$key]->store('public/images');
+                    $path = substr($path, strlen($publicDir) - 1, strlen($path));
+                    $img = Image::create([
+                        'url' => $path,
+                        'post_id' => $post->id
+                    ]);
+                    if($key == $data['thumbnail']){
+                        $img->is_thumbnail = true;
+                        $img->save();
+                    }
                 }
             }
 
-            foreach($data['tags'] as $tag){
-                $post->tags()->attach($tag);
+            if(isset($data['tags'])){
+                foreach($data['tags'] as $tag){
+                    $post->tags()->attach($tag);
+                }
             }
 
             DB::commit();
-            return true;
+            return $post;
         } catch (\Exception $ex) {
             DB::rollback();
             return false;
@@ -93,6 +97,7 @@ class PostSerivce {
                     $thumbnail->save();
 
                     $newThumbnail = $post->images()->find($data['thumbnail']);
+
                     $newThumbnail->is_thumbnail = true;
                     $newThumbnail->save();
                 }
@@ -118,7 +123,7 @@ class PostSerivce {
             }
 
             DB::commit();
-            return true;
+            return $post;
         } catch (\Exception $ex) {
             DB::rollback();
             return false;
@@ -129,6 +134,10 @@ class PostSerivce {
         DB::beginTransaction();
         try {
             $post = Post::find($id);
+            if($post->user_id != Auth::user()->id){
+                throw new \Exception('Permission denied');
+            }
+
             $images = $post->images->toArray();
             $images = array_map(function($img){
                 return 'public' . $img['url'];

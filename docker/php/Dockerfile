@@ -9,5 +9,8 @@ unzip \
 vim
 RUN apt-get update \
     && apt-get install -y libpq-dev \
-    && docker-php-ext-install pdo_mysql pdo_pgsql
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    && docker-php-ext-install gd pdo_mysql
 WORKDIR /var/www/html

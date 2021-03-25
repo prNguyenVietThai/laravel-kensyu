@@ -5,13 +5,21 @@ use App\Tag;
 
 class TagService {
     public static function getAll(){
-        return Tag::all();
+        try {
+            return Tag::all();
+        } catch (\Exception $ex) {
+            return false;
+        }
     }
 
     public static function create(array $data){
-        return Tag::create([
-            'name' => $data['name'],
-            'description' => $data['description']
-        ]);
+        try {
+            return Tag::create([
+                'name' => $data['name'],
+                'description' => $data['description']
+            ]);
+        } catch (\Exception $ex) {
+            return false;
+        }
     }
 }
